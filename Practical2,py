@@ -1,0 +1,90 @@
+
+from collections import deque
+
+moves = {
+    'U': -3,
+    'D': 3,
+    'L': -1,
+    'R': 1
+}
+
+def is_valid(pos, move):
+    if move == 'L' and pos % 3 == 0:
+        return False
+    if move == 'R' and pos % 3 == 2:
+        return False
+    if move == 'U' and pos < 3:
+        return False
+    if move == 'D' and pos > 5:
+        return False
+    return True
+
+def get_neighbors(state):
+    neighbors = []
+
+    zero_pos = state.index('0')
+
+    for move, step in moves.items():
+        if is_valid(zero_pos, move):
+            new_state = list(state)
+            swap_pos = zero_pos + step
+
+            new_state[zero_pos], new_state[swap_pos] = \
+                new_state[swap_pos], new_state[zero_pos]
+
+            neighbors.append(''.join(new_state))
+
+    return neighbors
+
+
+# BFS
+def bfs(start, goal):
+    visited = {start}
+    queue = deque([start])
+
+    while queue:
+        state = queue.popleft()
+        print(state)
+
+        if state == goal:
+            print("Goal reached!")
+            return
+
+        for neighbor in get_neighbors(state):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    print("Goal not found.")
+
+
+# DFS
+def dfs(start, goal):
+    visited = {start}
+    stack = [start]
+
+    while stack:
+        state = stack.pop()
+        print(state)
+
+        if state == goal:
+            print("Goal reached!")
+            return
+
+        for neighbor in get_neighbors(state):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                stack.append(neighbor)
+
+    print("Goal not found.")
+
+
+# Main
+start = "123456078"
+goal = "123456780"
+
+print("BFS for 8-Puzzle:")
+bfs(start, goal)
+
+print("\nDFS for 8-Puzzle:")
+dfs(start, goal)
